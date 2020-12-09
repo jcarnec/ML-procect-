@@ -1,0 +1,11 @@
+Server: nginx
+Content-Type: text/html; charset=UTF-8
+Expires: Mon, 26 Jul 1997 05:00:00 GMT
+Cache-Control: no-cache
+Content-Security-Policy: default-src blob: data: https: 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://steamstore-a.akamaihd.net/ https://steamstore-a.akamaihd.net/ *.google-analytics.com https://www.gstatic.com https://steamcommunity-a.akamaihd.net; object-src 'none'; connect-src 'self' http://store.steampowered.com https://store.steampowered.com http://127.0.0.1:27060 ws://127.0.0.1:27060 https://steamcommunity-a.akamaihd.net/ https://steamcommunity.com/ https://steamcommunity.com/ wss://community.steam-api.com/websocket/ https://api.steampowered.com/ *.google-analytics.com https://*.steamstatic.com https://*.steamcontent.com https://*.valvesoftware.com https://*.steambeta.net https://*.cqloud.com https://steambroadcast.akamaized.net https://steambroadcastchat.akamaized.net https://api.steampowered.com https://steamvideo-a.akamaihd.net/; frame-src 'self' steam:  http://www.youtube.com https://www.youtube.com https://www.google.com https://sketchfab.com https://player.vimeo.com https://steamcommunity.com/ https://steamcommunity.com/ embed.nicovideo.jp www.escapistmagazine.com player.youku.com www.bilibili.com https://medal.tv;
+X-Frame-Options: DENY
+Content-Encoding: gzip
+Vary: Accept-Encoding
+Strict-Transport-Security: max-age=300
+Date: Wed, 02 Dec 2020 09:29:48 GMT
+Set-Cookie: recentapps=%7B%22884400%22%3A1606901388%2C%22754340%22%3A1606901376%2C%22381750%22%3A1606901362%2C%22574090%22%3A1606901351%2C%22882200%22%3A1606901340%2C%22837440%22%3A1606901326%2C%22840070%22%3A1606901314%2C%22815280%22%3A1606901301%2C%22875550%22%3A1606901252%2C%22625740%22%3A1606880083%7D; expires=Tue, 02-Mar-2021 09:29:48 GMT; Max-Age=7776000; path=/
