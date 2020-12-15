@@ -1,3 +1,5 @@
+import urllib
+
 import jsonlines
 import requests
 import json
@@ -16,11 +18,20 @@ with jsonlines.open(output) as reader:
 
 print(products[0])
 '''
-url = 'http://steamspy.com/api.php'
+url = 'https://steamspy.com/api.php?request=all&page=1'
 response = requests.get(url)
 print(response)
+
+url = "https://steamspy.com/api.php?request=all&page=1"
+
+response = urllib.urlopen(url)
+
+data = json.loads(response.read())
+
+print(data)
 '''
-with open('games.json') as f:
+
+with open('games1.json') as f:
     data = json.load(f)
 
 keys = []
