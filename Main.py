@@ -28,17 +28,28 @@ data = json.loads(response.read())
 print(data)
 
 '''
-with open('Action_games.json') as f:
-    data = json.load(f)
 
-keys = []
-for key in data:
-    keys.append(key)
 
-print(len(keys))
+def assign_genre(filename, genre):
+    with open(filename) as f:
+        data = json.load(f)
+    keys = []
+    for key in data:
+        keys.append(key)
+    for key in keys:
+        data[key]["genre"] = genre
+    return data
 
-for key in keys:
-    data[key]["genre"] = "Action"
 
-print(data["359550"]["genre"])
+action_data = assign_genre('Action_games.json', "Action")
+adventure_data = assign_genre('Adventure_games.json', "Adventure")
+early_access_data = assign_genre('Early_access_games.json', "Early Access")
+ex_early_access_data = assign_genre('Ex_early_access_games.json', "Ex Early Access")
+free_data = assign_genre('Free_games.json', "Free")
+indie_data = assign_genre('Indie_games.json', "Indie")
+rpg_data = assign_genre('Role_playing_games.json', "RPG")
+simulation_data = assign_genre('Simulation_games.json', "Simulation")
+strategy_data = assign_genre('Strategy_games.json', "Strategy")
+sports_data = assign_genre('Sports_games.json', "Sports")
 
+print(sports_data["44350"]["genre"])
