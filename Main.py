@@ -3,7 +3,7 @@ import jsonlines
 import requests
 import json
 
-
+'''
 products = []
 
 output = 'scraper/steam-scraper/output/products_all.jl'
@@ -13,8 +13,6 @@ with jsonlines.open(output) as reader:
         products.append(obj)
         #data = obj['id']
         #print(data)
-
-'''
 url = 'https://steamspy.com/api.php?request=genre&genre=Adventure'
 response = requests.get(url)
 print(response)
@@ -28,6 +26,7 @@ data = json.loads(response.read())
 print(data)
 
 '''
+full_dict = {}
 
 
 def assign_genre(filename, genre):
@@ -37,19 +36,40 @@ def assign_genre(filename, genre):
     for key in data:
         keys.append(key)
     for key in keys:
-        data[key]["genre"] = genre
+        if key in full_dict:
+            temp = make_list(genre[0])
+            temp.extend(full_dict[key]["genre"])
+            data[key]["genre"] = temp
+
+        else:
+            data[key]["genre"] = genre
     return data
 
 
-action_data = assign_genre('Action_games.json', "Action")
-adventure_data = assign_genre('Adventure_games.json', "Adventure")
-early_access_data = assign_genre('Early_access_games.json', "Early Access")
-ex_early_access_data = assign_genre('Ex_early_access_games.json', "Ex Early Access")
-free_data = assign_genre('Free_games.json', "Free")
-indie_data = assign_genre('Indie_games.json', "Indie")
-rpg_data = assign_genre('Role_playing_games.json', "RPG")
-simulation_data = assign_genre('Simulation_games.json', "Simulation")
-strategy_data = assign_genre('Strategy_games.json', "Strategy")
-sports_data = assign_genre('Sports_games.json', "Sports")
+def make_list(string):
+    return [string]
 
-print(sports_data["44350"]["genre"])
+
+def add_and_update_full_dict(filename, genre):
+    genre_dict = assign_genre(filename, make_list(genre))
+    full_dict.update(genre_dict)
+
+
+def run():
+    add_and_update_full_dict('Action_games.json', "Action")
+    add_and_update_full_dict('Adventure_games.json', "Adventure")
+    add_and_update_full_dict('Early_access_games.json', "Early Access")
+    add_and_update_full_dict('Ex_early_access_games.json', "Ex Early Access")
+    add_and_update_full_dict('Free_games.json', "Free")
+    add_and_update_full_dict('Indie_games.json', "Indie")
+    add_and_update_full_dict('Role_playing_games.json', "RPG")
+    add_and_update_full_dict('Simulation_games.json', "Simulation")
+    add_and_update_full_dict('Strategy_games.json', "Strategy")
+    add_and_update_full_dict('Sports_games.json', "Sports")
+    print(full_dict["252950"]["name"])
+    print(full_dict["252950"]["publisher"])
+    print(full_dict["252950"]["positive"])
+    print(full_dict["252950"]["genre"])
+
+
+run()
