@@ -28,10 +28,8 @@ data = json.loads(response.read())
 print(data)
 
 '''
-test = True
 with open('Action_games.json') as f:
     data = json.load(f)
-    #data["genre"] = "Action"
 
 keys = []
 for key in data:
@@ -40,7 +38,7 @@ for key in data:
 print(len(keys))
 
 for key in keys:
-    print(data[key]["owners"])
+    data[key]["genre"] = "Action"
 
-#for game in products:
-    #print(game)
+print(data["359550"]["genre"])
+
