@@ -1,12 +1,8 @@
 import urllib
-
 import jsonlines
 import requests
 import json
-import os
 
-TEST_FILENAME = os.path.join(os.path.dirname(__file__), 'test.txt')
-print(TEST_FILENAME)
 
 products = []
 
@@ -15,10 +11,11 @@ output = 'scraper/steam-scraper/output/products_all.jl'
 with jsonlines.open(output) as reader:
     for obj in reader:
         products.append(obj)
+        #data = obj['id']
+        #print(data)
 
-print(products[0])
 '''
-url = 'https://steamspy.com/api.php?request=all&page=1'
+url = 'https://steamspy.com/api.php?request=genre&genre=Adventure'
 response = requests.get(url)
 print(response)
 
@@ -29,14 +26,21 @@ response = urllib.urlopen(url)
 data = json.loads(response.read())
 
 print(data)
-'''
 
-with open('games1.json') as f:
+'''
+test = True
+with open('Action_games.json') as f:
     data = json.load(f)
+    #data["genre"] = "Action"
 
 keys = []
 for key in data:
     keys.append(key)
 
+print(len(keys))
+
 for key in keys:
-    print(data[key]['owners'])
+    print(data[key]["owners"])
+
+#for game in products:
+    #print(game)
