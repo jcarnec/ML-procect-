@@ -1,5 +1,7 @@
 import urllib
 import jsonlines
+import numpy as np
+from sklearn import preprocessing
 import requests
 import json
 
@@ -30,7 +32,7 @@ full_dict = {}
 
 
 def assign_genre(filename, genre):
-    with open(filename) as f:
+    with open(filename, encoding="utf8") as f:
         data = json.load(f)
     keys = []
     for key in data:
@@ -66,10 +68,28 @@ def run():
     add_and_update_full_dict('Simulation_games.json', "Simulation")
     add_and_update_full_dict('Strategy_games.json', "Strategy")
     add_and_update_full_dict('Sports_games.json', "Sports")
-    print(full_dict["252950"]["name"])
-    print(full_dict["252950"]["publisher"])
-    print(full_dict["252950"]["positive"])
-    print(full_dict["252950"]["genre"])
+
+
+def normalise(z):
+    return (z - min(z)) / (max(z) - min(z))
 
 
 run()
+all_keys = []
+for key in full_dict:
+    all_keys.append(key)
+
+X1 = []  # parameter 1
+for key in all_keys:
+    X1.append(int(full_dict[key]["positive"]))
+
+X1 = np.array(X1)
+X1 = X1.reshape(-1, 1)
+normalised_X1 = normalise(X1)  # preprocessing.normalize() function does not seem to be working correctly
+print(normalised_X1)
+
+y = []  # output
+for key in all_keys:
+    y.append(full_dict[key]["owners"])
+
+print(len(y))
