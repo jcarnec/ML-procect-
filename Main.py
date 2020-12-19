@@ -5,6 +5,7 @@ from sklearn import preprocessing
 import requests
 import json
 import pickle as pk
+from sklearn import neighbors
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.preprocessing import LabelEncoder
 import math
@@ -18,6 +19,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.svm import LinearSVC 
 from sklearn.model_selection import KFold
 from sklearn.metrics import mean_squared_error
+from sklearn.neighbors import KNeighborsRegressor
 
 # Globals
 spy_games = {}
@@ -99,8 +101,8 @@ def normalise(z):
 
 
 def get_mean_value(range_string):
-    x = int(range_string.split(' ')[0].replace(',', ''))
-    y = int(range_string.split(' ')[-1].replace(',', ''))
+    x = float(range_string.split(' ')[0].replace(',', ''))
+    y = float(range_string.split(' ')[-1].replace(',', ''))
     return (y - x / 2)
 
 def disqualify(game, product):
@@ -159,20 +161,29 @@ def get_x_y():
     info['specs'] = encode_mlb(info, 'specs')
     list_of_np_array = []
     for key in info:
-        if key == "tags" or key == "specs" or key == "genre" or key == "early_access":
+        # if key == "tags" or key == "specs" or key == "genre" or key == "early_access":
+        if key == "tags" or key == "genre":
             list_of_np_array.append(info[key])
     X = np.column_stack(list_of_np_array)
     Y = np.array(info['owners'])
-    return X, Y
+    Y = Y / np.linalg.norm(Y) 
+    return X, Y, info
 
 
-X, Y = get_x_y()
-X = np.array(X)
-Y = np.array(Y)
+X, Y, set = get_x_y()
 
-kf = KFold(n_splits=2)
+kf = KFold(n_splits=3, shuffle=True)
 for train, test in kf.split(X):
    model = LinearRegression().fit(X[train], Y[train])
-   print(model.predict(X[test]))
-   print(mean_squared_error(Y[test], model.predict(X[test])))
+   knn_model = KNeighborsRegressor(n_neighbors = 10).fit(X[train], Y[train])
+   predictions = knn_model.predict(X[test])
+   x_sorted = [x for _,x in sorted(zip(Y,predictions))]
+   y_sorted = [y for y,_ in sorted(zip(Y,predictions))]
+   print(y_sorted)
+   print(len(y_sorted))
+   plt.scatter(y_sorted, x_sorted)
+   plt.xscale('log')
+   plt.yscale('log')
+   plt.show()
+
 
