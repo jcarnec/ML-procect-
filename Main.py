@@ -1,11 +1,14 @@
 import urllib
-import jsonlines
 import numpy as np
 from sklearn import preprocessing
 import requests
 import json
+import pandas as pd
+import pickle as pk
+
 
 '''
+TODO LOAD IN AND ADD TAGS and price
 products = []
 
 output = 'scraper/steam-scraper/output/products_all.jl'
@@ -13,8 +16,8 @@ output = 'scraper/steam-scraper/output/products_all.jl'
 with jsonlines.open(output) as reader:
     for obj in reader:
         products.append(obj)
-        #data = obj['id']
-        #print(data)
+        # data = obj['id']
+        # print(data)
 url = 'https://steamspy.com/api.php?request=genre&genre=Adventure'
 response = requests.get(url)
 print(response)
@@ -28,6 +31,7 @@ data = json.loads(response.read())
 print(data)
 
 '''
+
 full_dict = {}
 
 
@@ -57,7 +61,7 @@ def add_and_update_full_dict(filename, genre):
     full_dict.update(genre_dict)
 
 
-def run():
+def combine_files():
     add_and_update_full_dict('Action_games.json', "Action")
     add_and_update_full_dict('Adventure_games.json', "Adventure")
     add_and_update_full_dict('Early_access_games.json', "Early Access")
@@ -71,25 +75,30 @@ def run():
 
 
 def normalise(z):
+
     return (z - min(z)) / (max(z) - min(z))
 
 
-run()
-all_keys = []
-for key in full_dict:
-    all_keys.append(key)
+def get_mean_value(range_string):
+    pass
+
+
+combine_files()
+
+info = {
+    "genre": [],
+    "publisher": [],
+    "developer": [],
+    "owners": []
+}
 
 X1 = []  # parameter 1
-for key in all_keys:
-    X1.append(int(full_dict[key]["positive"]))
-
-X1 = np.array(X1)
-X1 = X1.reshape(-1, 1)
-normalised_X1 = normalise(X1)  # preprocessing.normalize() function does not seem to be working correctly
-print(normalised_X1)
-
-y = []  # output
-for key in all_keys:
-    y.append(full_dict[key]["owners"])
-
-print(len(y))
+for key in full_dict.keys():
+    game = full_dict[key]
+    if game["publisher"] != "" and game["developer"] != "":
+        info["genre"].append(game["genre"])
+        info["publisher"].append(game["publisher"])
+        info["developer"].append(game["developer"])
+        info["owners"].append(get_mean_value(game["owners"]))
+    else:
+        print("Eliminated")
