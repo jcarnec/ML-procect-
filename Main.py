@@ -44,8 +44,8 @@ def load_from_api():
     url = 'https://steamspy.com/api.php?request=genre&genre=Adventure'
     response = requests.get(url)
     print(response)
-
     url = "https://steamspy.com/api.php?request=all&page=1"
+
 
     response = urllib.urlopen(url)
 
@@ -134,6 +134,12 @@ def get_x_y():
     load_scraped()
 
 
+    #  with open('products.pickle', 'wb+') as handle:
+    #      pickle.dump(products, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    #
+    #  with open('products.pickle', 'rb') as handle:
+    #      products = pickle.load(handle)
+
     eliminated_count = 0
     for key in spy_games:
         if (key in products):
@@ -172,6 +178,7 @@ def get_x_y():
 
 X, Y, set = get_x_y()
 
+
 kf = KFold(n_splits=3, shuffle=True)
 for train, test in kf.split(X):
    model = LinearRegression().fit(X[train], Y[train])
@@ -185,5 +192,6 @@ for train, test in kf.split(X):
    plt.xscale('log')
    plt.yscale('log')
    plt.show()
+
 
 
