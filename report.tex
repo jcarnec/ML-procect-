@@ -1,0 +1,45 @@
+\section{Introduction}
+%Will wrote this introduction - feel free to make changes, but please note the changes too!
+The aim of this project was to create a model capable of predicting the sales using information available prior to the launch of a game.
+
+A model capable of making accurate predictions based on several different input parameters would prove quite useful to game development studios trying to anticipate the market performance of a specific project. This model would then also allow said studios to design projects with a mindset of optimising profits. 
+
+The inputs for our model included the price of a game at launch, the genre of the game, the developer and publisher, and whether the game offered additional features e.g. controller support or local multiplayer. Models were then constructed using LASSO, Ridge and kNN Regression, to try and best predict the sales of the given game.
+
+\section{Dataset and Features}
+The dataset was prepared...
+
+%Will's part
+To generate the target feature (the number of sales), a number of features available from SteamSpy had to be manipulated to produce useful values. SteamSpy offered a range of owners to 98\% confidence, but did not offer a precise number of owners for a given game. In a bid to produce better approximations of title ownership, the total number of reviews were normalised between 0 and 1, and then multiplied by the mean of the range in which they resided.
+This meant that games with enormous player bases would only normalise against similarly large games, and small games would only be normalised against smaller games.
+ 
+This method then allowed games to have a higher degree of specificity in their ownership, i.e. 200 games which were in the same range of "0 to 20,000" owners could now have weighted, individual numbers of owners assigned to them. This manipulation increased the utility of the target feature.
+
+\section{Methods}
+%Will's writing:
+Three forms of model were used: LASSO, Ridge and kNN regression in a bid to find which models would best predict the target feature.
+
+Both LASSO and Ridge regression are modifications of Linear regression, in that they each attribute different penalties to the cost functions used to fit their curves.
+
+Taking the cost function of Linear regression to have the form:
+\[
+J(\theta) = \frac{1}{m} \sum_{i=1}^m (h_{\theta}(x^{(i)}) - y^{(i)})^2
+\]
+
+Then $J(\theta)$ for LASSO regression with its (L1) penalty becomes:
+\[
+J(\theta) = \frac{1}{m} \sum_{i=1}^m (h_{\theta}(x^{(i)}) - y^{(i)})^2 + \frac{1}{C} \sum_{j=1}^n |\theta_j|
+\]
+And $J(\theta)$ for Ridge regression with its (L2) penalty becomes:
+\[
+J(\theta) = \frac{1}{m} \sum_{i=1}^m (h_{\theta}(x^{(i)}) - y^{(i)})^2 + \frac{1}{C} \sum_{j=1}^n \theta_j^2
+%\frac{\theta^T \theta}{C}
+\]
+
+k-Nearest Neighbours regression on the other hand defines weighting based on the proximity between nearby points to make predictions; rather than fitting an overall trend immediately, kNN looks at the local behaviours first to build up a picture of the system.
+
+\section{Discussion}
+
+
+%Will's part
+The aforementioned method of target feature generation used the total number of reviews for a given game to weight the number of owners for a given game. This produced a source of bias towards games that received a higher number of either positive or negative reviews, giving more highly reviewed games more owners. This was deemed an acceptable trade-off against the fact that games may have more actual owners, but who do not leave reviews. As such, the number of owners used as the target feature also reflects the critical engagement of the owners.
