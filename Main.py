@@ -1,4 +1,6 @@
+import csv
 import urllib
+from csv import reader
 import numpy as np
 import pandas
 from sklearn import preprocessing
@@ -120,10 +122,9 @@ def get_price(product):
     else: return 0
 
 def disqualify(game, product):
-    invalid_publisher = (game["publisher"] == "" or game["developer"] == "") or not isinstance(game["publisher"], str)
     no_specs = ("specs" not in product.keys())
     invalid_price = (get_price(product) == 0)
-    return (invalid_publisher or no_specs or invalid_price)
+    return (no_specs or invalid_price)
 
 def encode_mlb(info, key):
     mlb = MultiLabelBinarizer()
@@ -137,6 +138,14 @@ def encode_mlb(info, key):
 def get_x_y():
 
     combine_files()
+
+
+
+    with open('combined_table_target_features.csv', 'r') as read_obj:
+        csv_reader = reader(read_obj)
+        for row, p in zip(csv_reader, spy_games):
+            spy_games[p]['owners'] = row[0]
+
 
     info = {
         "genre": [],
@@ -168,7 +177,7 @@ def get_x_y():
                 info["genre"].append(spy_game["genre"])
                 info["publisher"].append(spy_game["publisher"])
                 info["developer"].append(spy_game["developer"])
-                info["owners"].append(get_mean_value(spy_game["owners"]))
+                info["owners"].append(float(spy_game["owners"]))
                 info["tags"].append(product['tags'])
                 info["early_access"].append(int(product['early_access'] == True))
                 info["specs"].append(product['specs'])
@@ -180,7 +189,6 @@ def get_x_y():
     
     print('eliminated count', eliminated_count)
 
-    info['price'] = encode_mlb(info, 'genre')
     info['genre'] = encode_mlb(info, 'genre')
     info['publisher'] = encode_mlb(info, 'publisher')
     info['developer'] = encode_mlb(info, 'developer')
@@ -189,26 +197,27 @@ def get_x_y():
     list_of_np_array = []
     for key in info:
         # if key == "tags" or key == "specs" or key == "genre" or key == "early_access":
-        if key == "tags" or key == "genre" or key == "price":
+        if key == "tags" or key == "genre":
             list_of_np_array.append(info[key])
     X = np.column_stack(list_of_np_array)
     Y = np.array(info['owners'])
-
     Y = Y / np.linalg.norm(Y) 
+
+
     return X, Y, info
 
 
 X, Y, set = get_x_y()
-print(len(Y))
 
 
 kf = KFold(n_splits=3, shuffle=True)
 for train, test in kf.split(X):
-   knn_model = KNeighborsRegressor(n_neighbors = 2).fit(X[train], Y[train])
-   predictions = knn_model.predict(X[test])
+   # model = KNeighborsRegressor(n_neighbors = 2).fit(X[train], Y[train])
+   model = LinearRegression().fit(X[train], Y[train])
+   predictions = model.predict(X[test])
    x_sorted = [x for _,x in sorted(zip(Y,predictions))]
    y_sorted = [y for y,_ in sorted(zip(Y,predictions))]
-   plt.scatter(y_sorted, x_sorted)
+   plt.plot(y_sorted, x_sorted, linestyle='None', markersize = 10.0, marker = '.')
    plt.xscale('log')
    plt.yscale('log')
    plt.show()
