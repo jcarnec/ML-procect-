@@ -9,6 +9,9 @@ The inputs for our model included the price of a game at launch, the genre of th
 \section{Dataset and Features}
 The dataset was prepared...
 
+%Darragh's part
+In order to obtain the main dataset that includes the number of sales for different games the SteamSpy API was used. GET requests were sent to the API based on the different genres of games because this would allow us to create a new field for each games list of genres. This was done by interacting with each of the different json files produced from the GET requests and adding the information of each game to a large array within the program. As the games were being stored locally in the program the genres that the game was associated with was also being added to the dictionary. This involved creating a new key in the dictionary and adding the different genres that are associated with each game.
+
 %Will's part
 To generate the target feature (the number of sales), a number of features available from SteamSpy had to be manipulated to produce useful values. SteamSpy offered a range of owners to 98\% confidence, but did not offer a precise number of owners for a given game. In a bid to produce better approximations of title ownership, the total number of reviews were normalised between 0 and 1, and then multiplied by the mean of the range in which they resided.
 This meant that games with enormous player bases would only normalise against similarly large games, and small games would only be normalised against smaller games.
@@ -40,6 +43,18 @@ k-Nearest Neighbours regression on the other hand defines weighting based on the
 
 \section{Discussion}
 
+%Darragh's part
+One of the hyperparameters that was looked at was the addition of polynomial features. One key issue arose with this which was that due to the high number of parameters the program would run into a memory error, which meant that for this project, polynomial features would not be used.
 
 %Will's part
 The aforementioned method of target feature generation used the total number of reviews for a given game to weight the number of owners for a given game. This produced a source of bias towards games that received a higher number of either positive or negative reviews, giving more highly reviewed games more owners. This was deemed an acceptable trade-off against the fact that games may have more actual owners, but who do not leave reviews. As such, the number of owners used as the target feature also reflects the critical engagement of the owners.
+
+\section{Summary}
+
+\section{Contributions}
+
+Darragh: \\Code contribution - reading in the json files, adding the genres to relevant games and combining all games into one large dicitonary. Attempted to run polynomial features as a hyperparameter.\\ Report contribution - Part of dataset and features, part of discussion
+
+
+
+\section{Github Link}
