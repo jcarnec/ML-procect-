@@ -25,6 +25,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.model_selection import KFold
 from sklearn.metrics import mean_squared_error
+from sklearn.metrics import r2_score
 from sklearn.linear_model import Lasso
 from sklearn.linear_model import Ridge
 from sklearn.neighbors import KNeighborsRegressor
@@ -198,7 +199,8 @@ ymse = mean_squared_error(ymeanline,Y)
 ymseline = ymse + 0*xspace
 
 #%% LASSO Regression - Tuning C hyperparameter
-mean_list = []; var_list =  []
+mse_mean_list = []; mse_var_list =  [];
+r2_mean_list = []; r2_var_list =  [];
 l = []; C = []
 counter = 0
 
@@ -212,12 +214,18 @@ for k in range(5,-11,-1):
 kf = KFold(n_splits=10, shuffle=True)
 for a in l:
     mse_list = []
+    r2_list = []
     for train,test in kf.split(X):
         model_lasso = Lasso(alpha=a, max_iter=10000).fit(X[train],Y[train])
         ypred_lasso = model_lasso.predict(X[test])
         mse_list.append(mean_squared_error(Y[test],ypred_lasso))
-    mean_list.append(np.mean(mse_list))
-    var_list.append(np.var(mse_list))
+        r2_list.append(r2_score(Y[test],ypred_lasso))
+        
+    mse_mean_list.append(np.mean(mse_list))
+    mse_var_list.append(np.var(mse_list))
+    
+    r2_mean_list.append(np.mean(r2_list))
+    r2_var_list.append(np.var(r2_list))
      
 fig01 = plt.figure(figsize=(10,5))
 ax01 = fig01.add_subplot(1,1,1)
@@ -225,14 +233,27 @@ Ctext01 = "Variation in Mean Squared Error with C for LASSO Regression"
 ax01.set_title(Ctext01, fontweight="bold", fontsize=15)
 ax01.set_xlabel('Hyperparameter ($C$)', fontweight="bold", fontsize=15)
 ax01.set_ylabel('Mean Squared Error', fontweight="bold", fontsize=15)
-ax01.set_yscale('log')
-ax01.errorbar(C,mean_list,yerr=var_list,capsize=5, label='$\\bar{x}^2 \pm \sigma^2$' )
+ax01.set_xscale('log')
+ax01.errorbar(C,mse_mean_list,yerr=mse_var_list,capsize=5, label='$\\bar{x}^2 \pm \sigma^2$' )
+ax01.plot(xspace,ymseline, label='Baseline $\\bar{x}^2$ in y')
+ax01.legend(fontsize=15, loc='best',fancybox= True,framealpha=0.97)
+ax01.grid()
+
+fig01 = plt.figure(figsize=(10,5))
+ax01 = fig01.add_subplot(1,1,1)
+Ctext01 = "Variation in $R^{2}$ with C for LASSO Regression"
+ax01.set_title(Ctext01, fontweight="bold", fontsize=15)
+ax01.set_xlabel('Hyperparameter ($C$)', fontweight="bold", fontsize=15)
+ax01.set_ylabel('$R^{2}$', fontweight="bold", fontsize=15)
+ax01.set_xscale('log')
+ax01.errorbar(C,r2_mean_list,yerr=r2_var_list,capsize=5, label='$R^2 \pm \sigma^2$' )
 ax01.plot(xspace,ymseline, label='Baseline $\\bar{x}^2$ in y')
 ax01.legend(fontsize=15, loc='best',fancybox= True,framealpha=0.97)
 ax01.grid()
 
 #%% Ridge Regression - Tuning C hyperparameter
-mean_list = []; var_list =  []
+mse_mean_list = []; mse_var_list =  [];
+r2_mean_list = []; r2_var_list =  [];
 l = []; C = []
 counter = 0
 
@@ -246,12 +267,18 @@ for k in range(5,-11,-1):
 kf = KFold(n_splits=10, shuffle=True)
 for a in l:
     mse_list = []
+    r2_list = []
     for train,test in kf.split(X):
         model_ridge = Ridge(alpha=a, max_iter=10000).fit(X[train],Y[train])
         ypred_ridge = model_ridge.predict(X[test])
         mse_list.append(mean_squared_error(Y[test],ypred_ridge))
-    mean_list.append(np.mean(mse_list))
-    var_list.append(np.var(mse_list))
+        r2_list.append(r2_score(Y[test],ypred_ridge))
+        
+    mse_mean_list.append(np.mean(mse_list))
+    mse_var_list.append(np.var(mse_list))
+    
+    r2_mean_list.append(np.mean(r2_list))
+    r2_var_list.append(np.var(r2_list))
      
 fig02 = plt.figure(figsize=(10,5))
 ax02 = fig02.add_subplot(1,1,1)
@@ -259,31 +286,49 @@ Ctext02 = "Variation in Mean Squared Error with C for Ridge Regression"
 ax02.set_title(Ctext02, fontweight="bold", fontsize=15)
 ax02.set_xlabel('Hyperparameter ($C$)', fontweight="bold", fontsize=15)
 ax02.set_ylabel('Mean Squared Error', fontweight="bold", fontsize=15)
-ax02.set_yscale('log')
-ax02.errorbar(C,mean_list,yerr=var_list,capsize=5, label='$\\bar{x}^2 \pm \sigma^2$' )
+ax02.set_xscale('log')
+ax02.errorbar(C,mse_mean_list,yerr=mse_var_list,capsize=5, label='$\\bar{x}^2 \pm \sigma^2$' )
+ax02.plot(xspace,ymseline, label='Baseline $\\bar{x}^2$ in y')
+ax02.legend(fontsize=15, loc='best',fancybox= True,framealpha=0.97)
+ax02.grid()
+
+fig02 = plt.figure(figsize=(10,5))
+ax02 = fig02.add_subplot(1,1,1)
+Ctext02 = "Variation in $R^{2}$ with C for Ridge Regression"
+ax02.set_title(Ctext02, fontweight="bold", fontsize=15)
+ax02.set_xlabel('Hyperparameter ($C$)', fontweight="bold", fontsize=15)
+ax02.set_ylabel('$R^{2}', fontweight="bold", fontsize=15)
+ax02.set_xscale('log')
+ax02.errorbar(C,r2_mean_list,yerr=r2_var_list,capsize=5, label='$R^2 \pm \sigma^2$' )
 ax02.plot(xspace,ymseline, label='Baseline $\\bar{x}^2$ in y')
 ax02.legend(fontsize=15, loc='best',fancybox= True,framealpha=0.97)
 ax02.grid()
 
 #%% Redefining xspace for baseline for kNN graphing purposes:
-xspace = np.linspace(0,60,len(Y))
+xspace = np.linspace(0,6,len(Y))
 
 #%% kNN Regression - Finding optimal k
-mean_list = []; var_list =  []
+mse_mean_list = []; mse_var_list =  [];
+r2_mean_list = []; r2_var_list =  [];
 gamma = 25
 k_space = []
 
 kf = KFold(n_splits=10, shuffle=True)
-for k in range(2,50,1):
+for k in range(2,5,1):
     mse_list = []
     k_space.append(k)
     for train,test in kf.split(X):
         model_knn = KNeighborsRegressor(n_neighbors=k,weights='distance').fit(X[train], Y[train])
-        ypred_knn = model_knn.predict(X_poly[test])
+        ypred_knn = model_knn.predict(X[test])
         mse_list.append(mean_squared_error(Y[test],ypred_knn))
-    mean_list.append(np.mean(mse_list))
-    var_list.append(np.var(mse_list))
-
+        r2_list.append(r2_score(Y[test],ypred_knn))
+        
+    mse_mean_list.append(np.mean(mse_list))
+    mse_var_list.append(np.var(mse_list))
+    
+    r2_mean_list.append(np.mean(r2_list))
+    r2_var_list.append(np.var(r2_list))
+#%%
 fig03 = plt.figure(figsize=(10,5))
 ax03 = fig03.add_subplot(1,1,1)
 Ctext03 = "Variation in Mean Squared Error with $k$ for kNN Regression, weighted by distance"
@@ -296,6 +341,19 @@ ax03.plot(xspace,ymseline, label='Baseline $\\bar{x}^2$ in y')
 ax03.legend(fontsize=15, loc='best',fancybox= True,framealpha=0.97)
 ax03.grid()
 
+fig03 = plt.figure(figsize=(10,5))
+ax03 = fig03.add_subplot(1,1,1)
+Ctext03 = "Variation in $R^{2}$ with $k$ for kNN Regression, weighted by distance"
+ax03.set_title(Ctext03, fontweight="bold", fontsize=13)
+ax03.set_xlabel('Number of Nearest Neighbours ($k$)', fontweight="bold", fontsize=15)
+ax03.set_ylabel('$R^{2}$', fontweight="bold", fontsize=15)
+ax03.set_yscale('log')
+ax03.errorbar(k_space,mean_list, yerr=var_list,capsize=5, label='$R^2 \pm \sigma^2$' )
+ax03.plot(xspace,ymseline, label='Baseline $\\bar{x}^2$ in y')
+ax03.legend(fontsize=15, loc='best',fancybox= True,framealpha=0.97)
+ax03.grid()
+
+
 #%% Kernelised kNN Regression - Finding optimal k
 def gaussian_kernel(distances):
     weights = np.exp(-(gamma) * (distances**2))
@@ -306,7 +364,7 @@ gamma = 25
 k_space = []
 
 kf = KFold(n_splits=10, shuffle=True)
-for k in range(2,50,1):
+for k in range(2,5,1):
     mse_list = []
     k_space.append(k)
     for train,test in kf.split(X):
