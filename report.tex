@@ -39,7 +39,45 @@ J(\theta) = \frac{1}{m} \sum_{i=1}^m (h_{\theta}(x^{(i)}) - y^{(i)})^2 + \frac{1
 %\frac{\theta^T \theta}{C}
 \]
 
-k-Nearest Neighbours regression on the other hand defines weighting based on the proximity between nearby points to make predictions; rather than fitting an overall trend immediately, kNN looks at the local behaviours first to build up a picture of the system.
+k-Nearest Neighbours regression on the other hand defines weighting based on the proximity between nearby points to make predictions; rather than fitting an overall trend immediately, kNN looks at the local behaviours first to build up a picture of the system. It is in this way that the method is considered "instance-based".
+%NEEDS TO BE FINISHED
+ Kernelising the kNN involves
+
+\section{Results}
+
+%Will's Part
+The results of the investigation fell short of expectations for two chief reasons - the models produced were not of sufficient fidelity for consistently useful predictions, and both the standard and kernelised kNN methods required a prohibitive amount of time to train, preventing the collection of data from those models. %Hold your horses there chief - may be able to do something yet!
+
+These setbacks aside, it was possible to investigate the performance of both the LASSO and Ridge regression methods, by way of mean squared error and $R^2$ value. All models were trained for n=10 splits.
+\vspace{8pt}
+
+Figure \ref{fig:fig1} demonstrates why the LASSO model would be thrown out at the earliest convenience. Whilst the mean squared error dips below the baseline at several points, there is no consistent improvement for any values of C. Similarly, all $R^{2}$ values are all less than 0, indicating that the mean is a more accurate prediction than the model.
+
+\begin{figure}[!h]
+\begin{small}
+\centering
+\linespread{1.0}
+\includegraphics[width=0.8\linewidth]{pics/Lasso_MSE.png}
+\includegraphics[width=0.8\linewidth]{pics/Lasso_R2.png}
+\caption{Varying C has no consistent impact on either MSE or $R^2$.}
+\label{fig:fig1}
+\end{small}
+\end{figure}
+
+Figure \ref{fig:fig2} shows the increased performance of Ridge regression over LASSO regression - MSE is consistently lower for RR, and whilst $R^2$ does fall below zero for increasing C (though $R^2 > 0$ for C $\approx 10$), this is a demonstrable improvement over the LASSO regression. 
+
+\begin{figure}[!h]
+\begin{small}
+\centering
+\linespread{1.0}
+\includegraphics[width=0.8\linewidth]{pics/Ridge_MSE.png}
+\includegraphics[width=0.8\linewidth]{pics/Ridge_R2.png}
+\caption{Increasing C has a negative impact on MSE and $R^2$.}
+\label{fig:fig2}
+\end{small}
+\end{figure}
+
+%Will - "I may have results for kNN soon"
 
 \section{Discussion}
 
@@ -49,12 +87,9 @@ One of the hyperparameters that was looked at was the addition of polynomial fea
 %Will's part
 The aforementioned method of target feature generation used the total number of reviews for a given game to weight the number of owners for a given game. This produced a source of bias towards games that received a higher number of either positive or negative reviews, giving more highly reviewed games more owners. This was deemed an acceptable trade-off against the fact that games may have more actual owners, but who do not leave reviews. As such, the number of owners used as the target feature also reflects the critical engagement of the owners.
 
-\section{Summary}
-
 \section{Contributions}
 
 Darragh: \\Code contribution - reading in the json files, adding the genres to relevant games and combining all games into one large dicitonary. Attempted to run polynomial features as a hyperparameter.\\ Report contribution - Part of dataset and features, part of discussion
 
-
-
-\section{Github Link}
+Will:
+\\Code contribution - production of the target feature, Y. Training and error analysis of models as found in p\_model.py\\ Report contribution - Template, introduction, part of dataset and features regarding the target feature, methods, results, analysis of results in discussion, analysis of target feature in discussion.
