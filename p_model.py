@@ -181,7 +181,7 @@ def get_x_y():
     list_of_np_array = []
     for key in info:
         # if key == "tags" or key == "specs" or key == "genre" or key == "early_access":
-        if key == "tags" or key == "genre":
+        if key == "tags" or key == "genre" or key == "specs" or key == "price":
             list_of_np_array.append(info[key])
     X = np.column_stack(list_of_np_array)
     Y = np.array(info['owners'])
@@ -226,7 +226,7 @@ for a in l:
     
     r2_mean_list.append(np.mean(r2_list))
     r2_var_list.append(np.var(r2_list))
-     
+#%%     
 fig01 = plt.figure(figsize=(10,5))
 ax01 = fig01.add_subplot(1,1,1)
 Ctext01 = "Variation in Mean Squared Error with C for LASSO Regression"
@@ -279,7 +279,7 @@ for a in l:
     
     r2_mean_list.append(np.mean(r2_list))
     r2_var_list.append(np.var(r2_list))
-     
+#%%     
 fig02 = plt.figure(figsize=(10,5))
 ax02 = fig02.add_subplot(1,1,1)
 Ctext02 = "Variation in Mean Squared Error with C for Ridge Regression"
@@ -305,7 +305,7 @@ ax02.legend(fontsize=15, loc='best',fancybox= True,framealpha=0.97)
 ax02.grid()
 
 #%% Redefining xspace for baseline for kNN graphing purposes:
-xspace = np.linspace(0,6,len(Y))
+xspace = np.linspace(0,11,len(Y))
 
 #%% kNN Regression - Finding optimal k
 mse_mean_list = []; mse_var_list =  [];
@@ -314,7 +314,7 @@ gamma = 25
 k_space = []
 
 kf = KFold(n_splits=10, shuffle=True)
-for k in range(2,5,1):
+for k in range(2,10,1):
     mse_list = []
     k_space.append(k)
     for train,test in kf.split(X):
@@ -336,7 +336,7 @@ ax03.set_title(Ctext03, fontweight="bold", fontsize=13)
 ax03.set_xlabel('Number of Nearest Neighbours ($k$)', fontweight="bold", fontsize=15)
 ax03.set_ylabel('Mean Squared Error', fontweight="bold", fontsize=15)
 ax03.set_yscale('log')
-ax03.errorbar(k_space,mean_list, yerr=var_list,capsize=5, label='$\\bar{x}^2 \pm \sigma^2$' )
+ax03.errorbar(k_space,mse_mean_list, yerr=mse_var_list,capsize=5, label='$\\bar{x}^2 \pm \sigma^2$' )
 ax03.plot(xspace,ymseline, label='Baseline $\\bar{x}^2$ in y')
 ax03.legend(fontsize=15, loc='best',fancybox= True,framealpha=0.97)
 ax03.grid()
@@ -348,7 +348,7 @@ ax03.set_title(Ctext03, fontweight="bold", fontsize=13)
 ax03.set_xlabel('Number of Nearest Neighbours ($k$)', fontweight="bold", fontsize=15)
 ax03.set_ylabel('$R^{2}$', fontweight="bold", fontsize=15)
 ax03.set_yscale('log')
-ax03.errorbar(k_space,mean_list, yerr=var_list,capsize=5, label='$R^2 \pm \sigma^2$' )
+ax03.errorbar(k_space,r2_mean_list, yerr=r2_var_list,capsize=5, label='$R^2 \pm \sigma^2$' )
 ax03.plot(xspace,ymseline, label='Baseline $\\bar{x}^2$ in y')
 ax03.legend(fontsize=15, loc='best',fancybox= True,framealpha=0.97)
 ax03.grid()
